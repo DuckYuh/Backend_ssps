@@ -24,7 +24,7 @@ const studentLogin = async (req, res) => {
         const token = createToken(user.Stu_ID);
 
         // Trả về thông tin người dùng và token nếu đăng nhập thành công
-        res.status(200).json({ message: "Đăng nhập thành công", token });
+        res.status(200).json({ message: "Đăng nhập thành công", token, role: user.role});//////////////
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Đăng nhập lỗi, vui lòng đăng nhập lại!" });
@@ -45,7 +45,7 @@ const adminLogin = async (req, res) => {
         }
 
         const token = createToken(user._id);
-        res.status(200).json({ message: "Đăng nhập thành công", token });
+        res.status(200).json({ message: "Đăng nhập thành công", token, role: user.role});
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "đăng nhập sai" });
