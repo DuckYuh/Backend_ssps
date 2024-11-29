@@ -114,4 +114,49 @@ const getBalance = async (req, res) => {
     }
 };
 
-export {studentLogin,adminLogin,updateBalance,updateQuotas, getBalance};
+const getHistory = async (req, res) => {
+    try {
+        const { Stu_ID } = req.body; // Lấy mã số sinh viên từ yêu cầu
+
+        // Tìm người dùng theo Stu_ID và chỉ lấy trường 'history'
+        const user = await userModel.findOne({ Stu_ID }, { history: 1, _id: 0 });
+
+        // Kiểm tra nếu người dùng không tồn tại
+        if (!user) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+
+        // Trả về lịch sử của người dùng
+        res.status(200).json({ message: "Lấy lịch sử thành công", history: user.history });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Lỗi khi lấy lịch sử" });
+    }
+};
+
+const getReport = async (req, res) => {
+    try {
+        const { Stu_ID } = req.body; // Lấy mã số sinh viên từ yêu cầu
+
+        // Tìm người dùng theo Stu_ID và chỉ lấy trường 'printHistory'
+        const user = await userModel.findOne({ Stu_ID }, { printHistory: 1, _id: 0 });
+
+        // Kiểm tra nếu người dùng không tồn tại
+        if (!user) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+
+        // Kiểm tra nếu không có lịch sử in
+        if (!user.printHistory || user.printHistory.length === 0) {
+            return res.status(200).json({ message: "Không có báo cáo in nào", report: [] });
+        }
+
+        // Trả về báo cáo in ấn
+        res.status(200).json({ message: "Lấy báo cáo thành công", report: user.printHistory });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Lỗi khi lấy báo cáo" });
+    }
+};
+
+export {studentLogin,adminLogin,updateBalance,updateQuotas, getBalance, getHistory, getReport};
