@@ -4,6 +4,7 @@ const fileSchema =new mongoose.Schema({
     Stu_ID: {type: String, require: true},
     filename: {type: String, require: true},
     filepath: {type: String, require: true},
+    numberOfPages: {type: Number, require: true},
     time: {type: Number, require: true}
 })
 
