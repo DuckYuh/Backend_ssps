@@ -1,27 +1,32 @@
 import fileModel from "../models/fileModel.js";
 import path from "path";
+import fs from "fs"; // Import fs để đọc file
+import { PDFDocument } from 'pdf-lib'; // Import PDFDocument từ pdf-lib
+
 
 const BASE_DIR = path.resolve("Backend_ssps");
 
 const uploadFile = async (req, res) => {
     try {
-        const {
-            Stu_ID,
-        } = req.body;
-       
+        const { Stu_ID } = req.body;
         const filepath = path.relative(BASE_DIR, req.file.path);
+
+        // Đọc số trang của file PDF
+        const pdfDoc = await PDFDocument.load(fs.readFileSync(req.file.path));
+        const numberOfPages = pdfDoc.getPageCount();
 
         const uploadData = {
             Stu_ID,
             filename: req.file.originalname,
             filepath,
-            time:Date.now(),
+            numberOfPages, // Thêm số trang vào dữ liệu upload
+            time: Date.now(),
         }
-        const files = new fileModel(uploadData)
+        const files = new fileModel(uploadData);
         await files.save();
-        res.json({success:true,message:"Uploaded"});
+        res.json({ success: true, message: "Uploaded", numberOfPages, filename: req.file.originalname, filepath: filepath });
     } catch (error) {
-        res.json({success: false,message: error.message});
+        res.json({ success: false, message: error.message });
     }
 }
 
