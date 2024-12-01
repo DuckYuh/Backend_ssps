@@ -52,29 +52,40 @@ const adminLogin = async (req, res) => {
     }
 }
 
-const updateBalance = async (req, res) => {
+const updateBalance = async (Stu_ID, paymentAmount, method) => {
     try {
-        const { Stu_ID,balance } = req.body;
-    
-        // Tìm và cập nhật số dư của người dùng
-        const user = await userModel.findOneAndUpdate(
+        // Tìm người dùng theo Stu_ID
+        const user = await userModel.findOne({ Stu_ID });
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        // Lấy số dư hiện tại của người dùng
+        const currentBalance = user.balance;
+
+        // Kiểm tra phương thức thanh toán (buy hoặc use)
+        let newBalance;
+        if (method === "buy") {
+            newBalance = currentBalance + paymentAmount;  // Nếu là "buy", cộng số tiền vào
+        } else if (method === "use") {
+            newBalance = currentBalance - paymentAmount;  // Nếu là "use", trừ số tiền đi
+        } else {
+            throw new Error("Invalid payment method");
+        }
+
+        // Cập nhật số dư mới vào MongoDB
+        const updatedUser = await userModel.findOneAndUpdate(
             { Stu_ID },
-            { balance },
+            { balance: newBalance },  // Cập nhật balance
             { new: true }
         );
 
-        // Kiểm tra nếu người dùng không tồn tại
-        if (!user) {
-            return res.status(404).json({ message: "Người dùng không tồn tại" });
-        }
-
-        // Trả về thông tin người dùng đã cập nhật
-        res.status(200).json({ message: "Cập nhật số dư thành công", user });
+        return updatedUser; // Trả về thông tin người dùng đã cập nhật
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Lỗi khi cập nhật số dư" });
+        throw new Error(error.message); // Nếu có lỗi, ném lỗi ra ngoài
     }
 };
+
 
 const updateQuotas = async (req, res) => {//??
     const { quotas } = req.body;
@@ -159,4 +170,39 @@ const getReport = async (req, res) => {
     }
 };
 
-export {studentLogin,adminLogin,updateBalance,updateQuotas, getBalance, getHistory, getReport};
+class Payment {
+    async processPayment(Stu_ID, amount, method) {
+        // Kiểm tra phương thức thanh toán
+        if (!["cash", "card"].includes(method)) {
+            return { status: "error", message: "Invalid payment method!" };
+        }
+
+        // Chuyển amount thành số và kiểm tra tính hợp lệ
+        const paymentAmount = parseInt(amount); 
+        if (isNaN(paymentAmount) || paymentAmount <= 0) {
+            return { status: "error", message: "Amount must be greater than 0!" };
+        }
+
+        // Kiểm tra sự tồn tại của Stu_ID trong MongoDB
+        const userExists = await userModel.findOne({ Stu_ID: Stu_ID });
+        if (!userExists) {
+            return { status: "error", message: `User ID ${Stu_ID} does not exist in the database.` };
+        }
+
+        // Cập nhật số dư người dùng
+        try {
+            const updatedUser = await updateBalance(Stu_ID, paymentAmount, "buy");
+
+            // Trả về thông tin thanh toán thành công và số dư mới
+            return {
+                status: "success",
+                message: `User ${Stu_ID} successfully made a payment of ${amount} using ${method}. New balance: ${updatedUser.balance}`,
+            };
+        } catch (error) {
+            console.error(error);
+            return { status: "error", message: "Error while updating balance." };
+        }
+    }
+}
+
+export {studentLogin,adminLogin,updateBalance,updateQuotas, getBalance, getHistory, getReport, Payment};
