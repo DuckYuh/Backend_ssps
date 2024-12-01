@@ -12,7 +12,11 @@ const uploadFile = async (req, res) => {
         const filepath = path.relative(BASE_DIR, req.file.path);
 
         // Đọc số trang của file PDF
-        const pdfDoc = await PDFDocument.load(fs.readFileSync(req.file.path));
+        const absoluteFilePath = path.resolve(BASE_DIR, req.file.path);
+
+        // Read the PDF file and load it into pdf-lib
+        const pdfBytes = fs.readFileSync(absoluteFilePath);
+        const pdfDoc = await PDFDocument.load(pdfBytes);
         const numberOfPages = pdfDoc.getPageCount();
 
         const uploadData = {
