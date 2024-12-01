@@ -1,5 +1,5 @@
 import express from 'express';
-import {studentLogin,adminLogin,updateBalance,updateQuotas, getBalance, getHistory, getReport, Payment} from '../controllers/userController.js';
+import {studentLogin,adminLogin,updateBalance,updateQuotas, getBalance, getHistory, getReport, Payment,getUserByID} from '../controllers/userController.js';
 import authStudent from '../middleware/userAuth.js';
 
 const userRouter = express.Router();
@@ -9,6 +9,7 @@ userRouter.post('/adminlogin',adminLogin)
 userRouter.post('/updatebalance',updateBalance)
 userRouter.post('/updatequotas',updateQuotas)
 userRouter.post('/getBalance',getBalance)
+userRouter.post('/getuser',getUserByID)
 userRouter.post("/make-payment", async (req, res) => {
     const {Stu_ID, amount, method } = req.body;
   

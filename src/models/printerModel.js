@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const printerSchema =new mongoose.Schema({
     PrinterID: {type: String, require: true},
+    printerName: {type: String, require: true},
     brand: {type: String, require: true},
     model: {type: String, require: true},
     description: {type: String},

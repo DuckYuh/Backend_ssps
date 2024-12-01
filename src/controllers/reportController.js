@@ -4,12 +4,15 @@ const sendReport = async (req, res) => {
     try {
         const {
             Stu_ID,
-            description
+            description,
+            location
         } = req.body;
 
         const reportData = {
             Stu_ID,
-            description
+            description,
+            location,
+            status: false
         }
 
         const report = new reportModel(reportData)
@@ -29,4 +32,35 @@ const getReport = async (req, res) => {
     }
 }
 
-export {sendReport,getReport};
+const updateReportStatus = async (req, res) => {
+    try {
+        const { id, status } = req.body;
+        if (!id || status === undefined) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Report ID and status are required" 
+            });
+        }
+        const updatedReport = await reportModel.findByIdAndUpdate(
+            id,
+            { status }, // Trường cần cập nhật
+            { new: true } // Trả lại tài liệu đã cập nhật
+        );
+        if (!updatedReport) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "Report not found" 
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Report status updated successfully",
+            report: updatedReport,
+        });
+    } catch (error) {
+        res.json({success: false,message: error.message});
+    }
+}
+
+export {sendReport,getReport,updateReportStatus};

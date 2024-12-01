@@ -4,6 +4,7 @@ const addPrinter = async (req, res) => {
     try {
         const {
             PrinterID,
+            printerName,
             brand,
             model,
             description,
@@ -15,6 +16,7 @@ const addPrinter = async (req, res) => {
 
         const printerData = {
             PrinterID,
+            printerName,
             brand,
             model,
             description,
@@ -54,6 +56,21 @@ const getAllPrinter = async (req, res) => {
     try {
         const printers = await printerModel.find({});
         res.json({ success: true, printers });
+    } catch (error) {
+        res.json({success: false,message: error.message});
+    }
+}
+
+const getPrinterByID = async (req, res) => {
+    try {
+        const{PrinterID} = req.body;
+        const printer = await uprinterModel.findOne({ PrinterID });
+
+        // Kiểm tra nếu người dùng không tồn tại
+        if (!printer) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+        res.json({ message: "Lấy printer thành công",printer });
     } catch (error) {
         res.json({success: false,message: error.message});
     }
@@ -107,4 +124,4 @@ const sendMaintenance = async (req, res) => {
     }
 };
 
-export {addPrinter,getAvaiblePrinter,getAllPrinter,updatePrinter,deletePrinter, sendMaintenance};
+export {addPrinter,getAvaiblePrinter,getAllPrinter,updatePrinter,deletePrinter, sendMaintenance, getPrinterByID};

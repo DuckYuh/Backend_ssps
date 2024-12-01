@@ -170,6 +170,21 @@ const getReport = async (req, res) => {
     }
 };
 
+const getUserByID = async (req, res) => {
+    try {
+        const{Stu_ID} = req.body;
+        const user = await userModel.findOne({ Stu_ID });
+
+        // Kiểm tra nếu người dùng không tồn tại
+        if (!user) {
+            return res.status(404).json({ message: "Người dùng không tồn tại" });
+        }
+        res.json({ message: "Lấy user thành công",user });
+    } catch (error) {
+        res.json({success: false,message: error.message});
+    }
+}
+
 class Payment {
     async processPayment(Stu_ID, amount, method) {
         // Kiểm tra phương thức thanh toán
@@ -205,4 +220,4 @@ class Payment {
     }
 }
 
-export {studentLogin,adminLogin,updateBalance,updateQuotas, getBalance, getHistory, getReport, Payment};
+export {studentLogin,adminLogin,updateBalance,updateQuotas, getBalance, getHistory, getReport, getUserByID, Payment};
