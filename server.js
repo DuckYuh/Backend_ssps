@@ -6,6 +6,7 @@ import userRouter from './src/routes/userRoute.js';
 import printerRouter from './src/routes/printerRoute.js';
 import processRouter from './src/routes/processRouter.js';
 import fileRouter from './src/routes/fileRoute.js';
+import reportRouter from './src/routes/reportRoute.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,6 +20,7 @@ app.use('/api/user',userRouter)
 app.use('/api/printer',printerRouter)
 app.use('/api/process',processRouter)
 app.use('/api/upload',fileRouter)
+app.use('/api/report',reportRouter)
 
 app.get('/', (req, res) => {
    res.send('This is a test');
