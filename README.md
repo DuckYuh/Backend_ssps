@@ -23,14 +23,14 @@ Backend for the Smart Printing Service Project (SSPS).
 
 4. To run the project in production mode:
     npm start
+   
+    Runs the app in the development mode.\
+    Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+    
+    The page will reload when you make changes.\
+    You may also see any lint errors in the console.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-5. API Testing:
+6. API Testing:
 The API will operate at http://localhost:3000 or the port specified in .env.
 ## API endpoints:
     /api/user
