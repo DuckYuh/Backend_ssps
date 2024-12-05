@@ -39,7 +39,7 @@ The API will operate at http://localhost:3000 or the port specified in .env.
     /api/upload
     /api/report
 
-6. Folder Structure
+6. Folder Structure:
     src/config: Configuration files (e.g., database connection).
     src/controllers: API logic and request handlers.
     src/middleware: Middleware functions.
