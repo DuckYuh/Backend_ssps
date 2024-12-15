@@ -64,7 +64,7 @@ const getAllPrinter = async (req, res) => {
 const getPrinterByID = async (req, res) => {
     try {
         const{PrinterID} = req.body;
-        const printer = await uprinterModel.findOne({ PrinterID });
+        const printer = await printerModel.findOne({ PrinterID });
 
         // Kiểm tra nếu người dùng không tồn tại
         if (!printer) {

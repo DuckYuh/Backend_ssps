@@ -9,8 +9,6 @@ const addProcess = async (req, res) => {
             PrinterID,
             filename,
             printProperties,
-            starttime,
-            endtime,
         } = req.body;
 
         const processData = {
@@ -18,8 +16,8 @@ const addProcess = async (req, res) => {
             PrinterID,
             filename,
             printProperties,
-            starttime,
-            endtime,
+            starttime: Date.now(),
+            endtime: Date.now(),
         }
 
         const process = new processModel(processData)
